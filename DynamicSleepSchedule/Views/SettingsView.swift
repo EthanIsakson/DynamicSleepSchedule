@@ -2,10 +2,80 @@ import SwiftUI
 
 struct SettingsView: View {
     @EnvironmentObject private var settings: AppSettings
+    @EnvironmentObject private var calendarService: CalendarService
 
     var body: some View {
         NavigationStack {
             Form {
+
+                // MARK: - Rules & Schedules
+                Section("Calendar Rules") {
+                    NavigationLink {
+                        RulesListView()
+                            .environmentObject(settings)
+                            .environmentObject(calendarService)
+                    } label: {
+                        Label {
+                            HStack {
+                                Text("Rules")
+                                Spacer()
+                                Text(settings.rules.isEmpty ? "None" : "\(settings.rules.count)")
+                                    .foregroundStyle(.secondary)
+                            }
+                        } icon: {
+                            Image(systemName: "list.bullet.clipboard")
+                        }
+                    }
+
+                    NavigationLink {
+                        DefaultScheduleView()
+                            .environmentObject(settings)
+                    } label: {
+                        Label("Default Schedule", systemImage: "calendar")
+                    }
+                }
+
+                // MARK: - Sleep Goal
+                Section {
+                    Stepper(value: $settings.desiredSleepHours, in: 5...12, step: 0.5) {
+                        HStack {
+                            Text("Desired Sleep")
+                            Spacer()
+                            Text(String(format: "%.1f hrs", settings.desiredSleepHours))
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                } header: {
+                    Text("Sleep Goal")
+                } footer: {
+                    Text("Bedtime is calculated as wake time minus your desired sleep duration.")
+                }
+
+                // MARK: - Sync
+                Section {
+                    Stepper(value: $settings.syncSettings.lookAheadDays, in: 1...30) {
+                        HStack {
+                            Text("Look Ahead")
+                            Spacer()
+                            Text("\(settings.syncSettings.lookAheadDays) days")
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+
+                    Picker("Frequency", selection: $settings.syncSettings.frequency) {
+                        ForEach(SyncFrequency.allCases, id: \.self) {
+                            Text($0.rawValue).tag($0)
+                        }
+                    }
+
+                    DatePicker("First Run At",
+                               selection: $settings.syncSettings.syncTime,
+                               displayedComponents: .hourAndMinute)
+                } header: {
+                    Text("Sync Schedule")
+                } footer: {
+                    Text("The app scans your calendar on this schedule and updates sleep suggestions automatically.")
+                }
 
                 // MARK: - Notifications
                 Section {
@@ -42,36 +112,9 @@ struct SettingsView: View {
                     }
                 }
 
-                // MARK: - Default Sleep Window
-                Section {
-                    DatePicker(
-                        "Bedtime",
-                        selection: $settings.defaultBedtime,
-                        displayedComponents: .hourAndMinute
-                    )
-                    DatePicker(
-                        "Wake Time",
-                        selection: $settings.defaultWakeTime,
-                        displayedComponents: .hourAndMinute
-                    )
-                    Stepper(value: $settings.minimumSleepHours, in: 5...10, step: 0.5) {
-                        HStack {
-                            Text("Minimum Sleep")
-                            Spacer()
-                            Text(String(format: "%.1f hrs", settings.minimumSleepHours))
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-                } header: {
-                    Text("Default Sleep Window")
-                } footer: {
-                    Text("The app will never suggest a schedule that dips below your minimum sleep target.")
-                }
-
                 // MARK: - About
                 Section("About") {
-                    LabeledContent("Version", value: "1.0 (Phase 1)")
-                    LabeledContent("Calendar Sync", value: "Coming in Phase 2")
+                    LabeledContent("Version", value: "1.0")
                 }
             }
             .navigationTitle("Settings")
@@ -83,4 +126,5 @@ struct SettingsView: View {
 #Preview {
     SettingsView()
         .environmentObject(AppSettings())
+        .environmentObject(CalendarService())
 }

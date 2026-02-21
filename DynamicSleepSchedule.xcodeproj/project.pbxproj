@@ -16,6 +16,13 @@
 		D3E4F5A6B1C2D3E4F5A6B1C2 /* SleepCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2B3C4D5E6F1A2B3C4D5E6F1 /* SleepCardView.swift */; };
 		E3F4A5B6C1D2E3F4A5B6C1D2 /* AdjustmentBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C3D4E5F6A1B2C3D4E5F6A1 /* AdjustmentBannerView.swift */; };
 		F3A4B5C6D1E2F3A4B5C6D1E2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C2D3E4F5A6B1C2D3E4F5A6B1 /* Assets.xcassets */; };
+		B5C6D7E8F9A0B5C6D7E8F9A0 /* EventRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B6C7D8E9F0A5B6C7D8E9F0 /* EventRule.swift */; };
+		D5E6F7A8B9C0D5E6F7A8B9C0 /* WeeklyDefaultSchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5D6E7F8A9B0C5D6E7F8A9B0 /* WeeklyDefaultSchedule.swift */; };
+		F5A6B7C8D9E0F5A6B7C8D9E0 /* SyncSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6A7B8C9D0E5F6A7B8C9D0 /* SyncSettings.swift */; };
+		B6C7D8E9F0A1B6C7D8E9F0A1 /* CalendarService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6B7C8D9E0F1A6B7C8D9E0F1 /* CalendarService.swift */; };
+		D6E7F8A9B0C1D6E7F8A9B0C1 /* RulesListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D7E8F9A0B1C6D7E8F9A0B1 /* RulesListView.swift */; };
+		F6A7B8C9D0E1F6A7B8C9D0E1 /* RuleEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6F7A8B9C0D1E6F7A8B9C0D1 /* RuleEditorView.swift */; };
+		B7C8D9E0F1A2B7C8D9E0F1A2 /* DefaultScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7B8C9D0E1F2A7B8C9D0E1F2 /* DefaultScheduleView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +36,13 @@
 		B2C3D4E5F6A1B2C3D4E5F6A1 /* AdjustmentBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdjustmentBannerView.swift; sourceTree = "<group>"; };
 		C2D3E4F5A6B1C2D3E4F5A6B1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EEEEEEEEEEEEEEEEEEEEEEEE /* DynamicSleepSchedule.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DynamicSleepSchedule.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A5B6C7D8E9F0A5B6C7D8E9F0 /* EventRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventRule.swift; sourceTree = "<group>"; };
+		C5D6E7F8A9B0C5D6E7F8A9B0 /* WeeklyDefaultSchedule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeeklyDefaultSchedule.swift; sourceTree = "<group>"; };
+		E5F6A7B8C9D0E5F6A7B8C9D0 /* SyncSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncSettings.swift; sourceTree = "<group>"; };
+		A6B7C8D9E0F1A6B7C8D9E0F1 /* CalendarService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarService.swift; sourceTree = "<group>"; };
+		C6D7E8F9A0B1C6D7E8F9A0B1 /* RulesListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RulesListView.swift; sourceTree = "<group>"; };
+		E6F7A8B9C0D1E6F7A8B9C0D1 /* RuleEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuleEditorView.swift; sourceTree = "<group>"; };
+		A7B8C9D0E1F2A7B8C9D0E1F2 /* DefaultScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultScheduleView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -54,6 +68,7 @@
 				A1B2C3D4E5F6A1B2C3D4E5F6 /* DynamicSleepScheduleApp.swift */,
 				B1C2D3E4F5A6B1C2D3E4F5A6 /* ContentView.swift */,
 				B4C5D6E1F2A3B4C5D6E1F2A3 /* Models */,
+				C7D8E9F0A1B2C7D8E9F0A1B2 /* Services */,
 				C4D5E6F1A2B3C4D5E6F1A2B3 /* Views */,
 				C2D3E4F5A6B1C2D3E4F5A6B1 /* Assets.xcassets */,
 			);
@@ -65,8 +80,19 @@
 			children = (
 				C1D2E3F4A5B6C1D2E3F4A5B6 /* AppSettings.swift */,
 				D1E2F3A4B5C6D1E2F3A4B5C6 /* SleepSchedule.swift */,
+				A5B6C7D8E9F0A5B6C7D8E9F0 /* EventRule.swift */,
+				C5D6E7F8A9B0C5D6E7F8A9B0 /* WeeklyDefaultSchedule.swift */,
+				E5F6A7B8C9D0E5F6A7B8C9D0 /* SyncSettings.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		C7D8E9F0A1B2C7D8E9F0A1B2 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				A6B7C8D9E0F1A6B7C8D9E0F1 /* CalendarService.swift */,
+			);
+			path = Services;
 			sourceTree = "<group>";
 		};
 		C4D5E6F1A2B3C4D5E6F1A2B3 /* Views */ = {
@@ -74,7 +100,9 @@
 			children = (
 				E1F2A3B4C5D6E1F2A3B4C5D6 /* HomeView.swift */,
 				F1A2B3C4D5E6F1A2B3C4D5E6 /* SettingsView.swift */,
+				A7B8C9D0E1F2A7B8C9D0E1F2 /* DefaultScheduleView.swift */,
 				D4E5F6A1B2C3D4E5F6A1B2C3 /* Components */,
+				D7E8F9A0B1C2D7E8F9A0B1C2 /* Rules */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -86,6 +114,15 @@
 				B2C3D4E5F6A1B2C3D4E5F6A1 /* AdjustmentBannerView.swift */,
 			);
 			path = Components;
+			sourceTree = "<group>";
+		};
+		D7E8F9A0B1C2D7E8F9A0B1C2 /* Rules */ = {
+			isa = PBXGroup;
+			children = (
+				C6D7E8F9A0B1C6D7E8F9A0B1 /* RulesListView.swift */,
+				E6F7A8B9C0D1E6F7A8B9C0D1 /* RuleEditorView.swift */,
+			);
+			path = Rules;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -160,10 +197,17 @@
 				E2F3A4B5C6D1E2F3A4B5C6D1 /* ContentView.swift in Sources */,
 				F2A3B4C5D6E1F2A3B4C5D6E1 /* AppSettings.swift in Sources */,
 				A3B4C5D6E1F2A3B4C5D6E1F2 /* SleepSchedule.swift in Sources */,
+				B5C6D7E8F9A0B5C6D7E8F9A0 /* EventRule.swift in Sources */,
+				D5E6F7A8B9C0D5E6F7A8B9C0 /* WeeklyDefaultSchedule.swift in Sources */,
+				F5A6B7C8D9E0F5A6B7C8D9E0 /* SyncSettings.swift in Sources */,
+				B6C7D8E9F0A1B6C7D8E9F0A1 /* CalendarService.swift in Sources */,
 				B3C4D5E6F1A2B3C4D5E6F1A2 /* HomeView.swift in Sources */,
 				C3D4E5F6A1B2C3D4E5F6A1B2 /* SettingsView.swift in Sources */,
+				B7C8D9E0F1A2B7C8D9E0F1A2 /* DefaultScheduleView.swift in Sources */,
 				D3E4F5A6B1C2D3E4F5A6B1C2 /* SleepCardView.swift in Sources */,
 				E3F4A5B6C1D2E3F4A5B6C1D2 /* AdjustmentBannerView.swift in Sources */,
+				D6E7F8A9B0C1D6E7F8A9B0C1 /* RulesListView.swift in Sources */,
+				F6A7B8C9D0E1F6A7B8C9D0E1 /* RuleEditorView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
