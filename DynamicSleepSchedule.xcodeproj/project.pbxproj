@@ -1,0 +1,279 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		8872D9DB43E544118B1C61FC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A3903FAB9ED4223B0F69D92 /* ContentView.swift */; };
+		73578E8F2F0C49A18EE33ECB /* DynamicSleepScheduleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D5DDE538BC43BEBCC2BF5C /* DynamicSleepScheduleApp.swift */; };
+		BAE23B0E2FAA4C959FBF6B69 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBDFB25F6DF14387B5D0DEAA /* AppSettings.swift */; };
+		C0F4115C94E24073BA4F31E5 /* SleepSchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCD2C3F281A64E94BAFE3013 /* SleepSchedule.swift */; };
+		C986621B34AC4A2AB32508A1 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90B50EC5FBB402A8A3321C4 /* HomeView.swift */; };
+		0C195E5C8EC94B77BFBBF96B /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B194E016BC473D8458981F /* SettingsView.swift */; };
+		77F8F91E6DC346F09191C032 /* AdjustmentBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ECB8EE1FEA241E190A91502 /* AdjustmentBannerView.swift */; };
+		03384C7DFB4146AE87B74E61 /* SleepCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D879DD44DBB54DCEA1CA6DBD /* SleepCardView.swift */; };
+		54BB0351B0634F1F81792479 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EE8B209055B74559ABEAE9F2 /* Assets.xcassets */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		8263EBBE41DA461291123C7B /* DynamicSleepSchedule.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DynamicSleepSchedule.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		0A3903FAB9ED4223B0F69D92 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		D8D5DDE538BC43BEBCC2BF5C /* DynamicSleepScheduleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicSleepScheduleApp.swift; sourceTree = "<group>"; };
+		DBDFB25F6DF14387B5D0DEAA /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
+		FCD2C3F281A64E94BAFE3013 /* SleepSchedule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepSchedule.swift; sourceTree = "<group>"; };
+		A90B50EC5FBB402A8A3321C4 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		84B194E016BC473D8458981F /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		9ECB8EE1FEA241E190A91502 /* AdjustmentBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdjustmentBannerView.swift; sourceTree = "<group>"; };
+		D879DD44DBB54DCEA1CA6DBD /* SleepCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepCardView.swift; sourceTree = "<group>"; };
+		EE8B209055B74559ABEAE9F2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		1A45114759C2443BB87FB6B4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		DA4E6EDB7D7D49D38DEEFC65 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		89B0C2022A584D6CA1B76E33 = {
+			isa = PBXGroup;
+			children = (
+				C6D7E31C1BF54BD0B43CD443 /* DynamicSleepSchedule */,
+				D286070897244D938DE648FD /* Products */,
+				E16E36D7119B478EAE77FCB8 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		C6D7E31C1BF54BD0B43CD443 /* DynamicSleepSchedule */ = {
+			isa = PBXGroup;
+			children = (
+				0A3903FAB9ED4223B0F69D92 /* ContentView.swift */,
+				D8D5DDE538BC43BEBCC2BF5C /* DynamicSleepScheduleApp.swift */,
+				EE8B209055B74559ABEAE9F2 /* Assets.xcassets */,
+				1A45114759C2443BB87FB6B4 /* Info.plist */,
+				2FD5CA2175BE4CA99837FB3D /* Models */,
+				B4892AD8CA4D437598C8E8EC /* Views */,
+			);
+			path = DynamicSleepSchedule;
+			sourceTree = "<group>";
+		};
+		2FD5CA2175BE4CA99837FB3D /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				DBDFB25F6DF14387B5D0DEAA /* AppSettings.swift */,
+				FCD2C3F281A64E94BAFE3013 /* SleepSchedule.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		B4892AD8CA4D437598C8E8EC /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A90B50EC5FBB402A8A3321C4 /* HomeView.swift */,
+				84B194E016BC473D8458981F /* SettingsView.swift */,
+				2D7E847BA165414CACDA3509 /* Components */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		2D7E847BA165414CACDA3509 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				9ECB8EE1FEA241E190A91502 /* AdjustmentBannerView.swift */,
+				D879DD44DBB54DCEA1CA6DBD /* SleepCardView.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		D286070897244D938DE648FD /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8263EBBE41DA461291123C7B /* DynamicSleepSchedule.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E16E36D7119B478EAE77FCB8 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		94E4F3ACBB1646BE9DA8524E /* DynamicSleepSchedule */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 10A91C832BC64057981F1428 /* Build configuration list for PBXNativeTarget "DynamicSleepSchedule" */;
+			buildPhases = (
+				BA0C683FB4EF482EBA7854E3 /* Sources */,
+				DA4E6EDB7D7D49D38DEEFC65 /* Frameworks */,
+				CDA2EF79B8B849959DA4CB7B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = DynamicSleepSchedule;
+			productName = DynamicSleepSchedule;
+			productReference = 8263EBBE41DA461291123C7B /* DynamicSleepSchedule.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		2A8925775D254794834BB8B2 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastUpgradeCheck = 1620;
+				TargetAttributes = {
+					94E4F3ACBB1646BE9DA8524E = {
+						CreatedOnToolsVersion = 16.2;
+					};
+				};
+			};
+			buildConfigurationList = A227CAB0056D4703B45FDA94 /* Build configuration list for PBXProject "DynamicSleepSchedule" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			mainGroup = 89B0C2022A584D6CA1B76E33;
+			productRefGroup = D286070897244D938DE648FD /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				94E4F3ACBB1646BE9DA8524E /* DynamicSleepSchedule */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		CDA2EF79B8B849959DA4CB7B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				54BB0351B0634F1F81792479 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		BA0C683FB4EF482EBA7854E3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8872D9DB43E544118B1C61FC /* ContentView.swift in Sources */,
+				73578E8F2F0C49A18EE33ECB /* DynamicSleepScheduleApp.swift in Sources */,
+				BAE23B0E2FAA4C959FBF6B69 /* AppSettings.swift in Sources */,
+				C0F4115C94E24073BA4F31E5 /* SleepSchedule.swift in Sources */,
+				C986621B34AC4A2AB32508A1 /* HomeView.swift in Sources */,
+				0C195E5C8EC94B77BFBBF96B /* SettingsView.swift in Sources */,
+				77F8F91E6DC346F09191C032 /* AdjustmentBannerView.swift in Sources */,
+				03384C7DFB4146AE87B74E61 /* SleepCardView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		F561F098233E4B28B2CD1BE8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = "";
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		838D56EEC99845A79E5AABB0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = "";
+				SDKROOT = iphoneos;
+			};
+			name = Release;
+		};
+		0464AF3466DB4236A36DBBCA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = DynamicSleepSchedule/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.DynamicSleepSchedule;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		6C0FE36B249B40689E730C99 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = DynamicSleepSchedule/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.DynamicSleepSchedule;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A227CAB0056D4703B45FDA94 /* Build configuration list for PBXProject "DynamicSleepSchedule" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F561F098233E4B28B2CD1BE8 /* Debug */,
+				838D56EEC99845A79E5AABB0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		10A91C832BC64057981F1428 /* Build configuration list for PBXNativeTarget "DynamicSleepSchedule" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0464AF3466DB4236A36DBBCA /* Debug */,
+				6C0FE36B249B40689E730C99 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 2A8925775D254794834BB8B2 /* Project object */;
+}
