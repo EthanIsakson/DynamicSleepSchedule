@@ -3,9 +3,12 @@ import SwiftUI
 struct SettingsView: View {
     @EnvironmentObject private var settings: AppSettings
     @EnvironmentObject private var calendarService: CalendarService
+    @EnvironmentObject private var focusSleepService: FocusSleepService
 
-    /// Local draft — not written to settings until the user taps Apply.
+    /// Local drafts — not written to settings until the user taps Apply & Sync.
     @State private var draftFilters: [EventFilter] = []
+    @State private var draftWakeOffset: Int = 30
+
     @State private var syncPressed = false
 
     var body: some View {
@@ -47,30 +50,16 @@ struct SettingsView: View {
                     }
                 }
 
-                // MARK: - Default Sleep Window
+                // MARK: - Bedtime to Wake Up
                 Section {
-                    DatePicker(
-                        "Bedtime",
-                        selection: $settings.defaultBedtime,
-                        displayedComponents: .hourAndMinute
-                    )
-                    DatePicker(
-                        "Wake Time",
-                        selection: $settings.defaultWakeTime,
-                        displayedComponents: .hourAndMinute
-                    )
-                    Stepper(value: $settings.minimumSleepHours, in: 5...10, step: 0.5) {
-                        HStack {
-                            Text("Minimum Sleep")
-                            Spacer()
-                            Text(String(format: "%.1f hrs", settings.minimumSleepHours))
-                                .foregroundStyle(.secondary)
-                        }
-                    }
+                    DatePicker("Bedtime", selection: $settings.defaultBedtime,
+                               displayedComponents: .hourAndMinute)
+                    DatePicker("Wake Up", selection: $settings.defaultWakeTime,
+                               displayedComponents: .hourAndMinute)
                 } header: {
-                    Text("Default Sleep Window")
+                    Text("Bedtime to Wake Up")
                 } footer: {
-                    Text("The app will never suggest a schedule that dips below your minimum sleep target.")
+                    Text("Your default sleep window. The app shifts this earlier when a calendar event conflicts.")
                 }
 
                 // MARK: - Calendar Sync
@@ -84,8 +73,26 @@ struct SettingsView: View {
                         }
                     }
 
+                    Stepper(value: $draftWakeOffset, in: 5...120, step: 5) {
+                        HStack {
+                            Text("Wake Up Offset")
+                            Spacer()
+                            Text("\(draftWakeOffset) min before event")
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+
                     ForEach($draftFilters) { $filter in
-                        HStack(spacing: 8) {
+                        HStack(spacing: 6) {
+                            Picker("", selection: $filter.field) {
+                                ForEach(EventFilter.Field.allCases, id: \.self) { f in
+                                    Text(f.rawValue).tag(f)
+                                }
+                            }
+                            .labelsHidden()
+                            .pickerStyle(.menu)
+                            .fixedSize()
+
                             Picker("", selection: $filter.op) {
                                 ForEach(EventFilter.Operator.allCases, id: \.self) { op in
                                     Text(op.rawValue).tag(op)
@@ -95,7 +102,7 @@ struct SettingsView: View {
                             .pickerStyle(.menu)
                             .fixedSize()
 
-                            TextField("event name", text: $filter.value)
+                            TextField("value", text: $filter.value)
 
                             Button {
                                 draftFilters.removeAll { $0.id == filter.id }
@@ -120,8 +127,12 @@ struct SettingsView: View {
                         withAnimation(.spring(response: 0.3, dampingFraction: 0.6).delay(0.15)) {
                             syncPressed = false
                         }
+                        settings.wakeOffsetMinutes = draftWakeOffset
                         settings.eventFilters = draftFilters
-                        Task { await calendarService.sync(settings: settings) }
+                        Task {
+                            await calendarService.sync(settings: settings)
+                            await focusSleepService.writeSleepSchedule(calendarService.scheduleSummary)
+                        }
                     } label: {
                         HStack(spacing: 6) {
                             Image(systemName: calendarService.isLoading ? "hourglass" : "arrow.clockwise")
@@ -141,7 +152,34 @@ struct SettingsView: View {
                 } footer: {
                     Text(draftFilters.isEmpty
                          ? "All events in the look-ahead window are checked for sleep conflicts."
-                         : "Only events that satisfy every filter are checked. Tap Apply & Sync to save and run.")
+                         : "Only events matching every filter are checked. Tap Apply & Sync to save and run.")
+                }
+
+                // MARK: - Focus – Sleep
+                Section {
+                    if focusSleepService.isAvailable {
+                        HStack {
+                            Label("Health Access", systemImage: "heart.fill")
+                            Spacer()
+                            if focusSleepService.isAuthorized {
+                                Text("Granted")
+                                    .foregroundStyle(.secondary)
+                            } else {
+                                Button("Authorize") {
+                                    Task { await focusSleepService.requestAuthorization() }
+                                }
+                                .buttonStyle(.bordered)
+                                .tint(.indigo)
+                            }
+                        }
+                    } else {
+                        Label("HealthKit unavailable on this device", systemImage: "exclamationmark.triangle")
+                            .foregroundStyle(.secondary)
+                    }
+                } header: {
+                    Text("Focus – Sleep")
+                } footer: {
+                    Text("Grants write access so adjusted sleep windows are sent to the Health app and can influence your Sleep Focus schedule.")
                 }
 
                 // MARK: - About
@@ -152,7 +190,8 @@ struct SettingsView: View {
             .navigationTitle("Settings")
             .animation(.easeInOut(duration: 0.2), value: settings.notificationsEnabled)
             .onAppear {
-                draftFilters = settings.eventFilters
+                draftFilters    = settings.eventFilters
+                draftWakeOffset = settings.wakeOffsetMinutes
             }
         }
     }
@@ -162,4 +201,5 @@ struct SettingsView: View {
     SettingsView()
         .environmentObject(AppSettings())
         .environmentObject(CalendarService())
+        .environmentObject(FocusSleepService())
 }

@@ -13,8 +13,6 @@ class CalendarService: ObservableObject {
 
     private let eventStore = EKEventStore()
 
-    /// How many minutes before an event the user needs to be awake and ready.
-    let preparationBufferMinutes: Int = 30
 
     // MARK: - Authorization
 
@@ -54,8 +52,9 @@ class CalendarService: ObservableObject {
             .filter { !$0.isAllDay }
             .filter { event in
                 guard !settings.eventFilters.isEmpty else { return true }
-                let title = event.title ?? ""
-                return settings.eventFilters.allSatisfy { $0.matches(title) }
+                let title    = event.title ?? ""
+                let calName  = event.calendar?.title ?? ""
+                return settings.eventFilters.allSatisfy { $0.matches(title: title, calendarName: calName) }
             }
             .sorted { $0.startDate < $1.startDate }
 
@@ -106,7 +105,7 @@ class CalendarService: ObservableObject {
         }
 
         let defaultSchedule = SleepSchedule(bedtime: bedtime, wakeTime: wakeTime)
-        let bufferInterval  = TimeInterval(preparationBufferMinutes * 60)
+        let bufferInterval  = TimeInterval(settings.wakeOffsetMinutes * 60)
         let conflictWindowEnd = wakeTime.addingTimeInterval(bufferInterval)
 
         // Find the event requiring the earliest wake time within the conflict window.

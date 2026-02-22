@@ -3,6 +3,7 @@ import SwiftUI
 struct HomeView: View {
     @EnvironmentObject private var settings: AppSettings
     @EnvironmentObject private var calendarService: CalendarService
+    @EnvironmentObject private var focusSleepService: FocusSleepService
 
     var body: some View {
         NavigationStack {
@@ -53,7 +54,10 @@ struct HomeView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
-                        Task { await calendarService.sync(settings: settings) }
+                        Task {
+                            await calendarService.sync(settings: settings)
+                            await focusSleepService.writeSleepSchedule(calendarService.scheduleSummary)
+                        }
                     } label: {
                         if calendarService.isLoading {
                             ProgressView()
@@ -68,6 +72,7 @@ struct HomeView: View {
                 await calendarService.requestAccess()
                 if calendarService.isAuthorized {
                     await calendarService.sync(settings: settings)
+                    await focusSleepService.writeSleepSchedule(calendarService.scheduleSummary)
                 }
             }
         }
@@ -89,7 +94,7 @@ struct HomeView: View {
                         .foregroundStyle(.secondary)
                 }
                 Spacer()
-                Text("\(abs(adjustment.bedtimeShiftMinutes)) min earlier")
+                Text("\(adjustment.shiftLabel) \(adjustment.direction.label)")
                     .font(.caption.weight(.medium))
                     .foregroundStyle(.orange)
                     .padding(.horizontal, 8)
@@ -99,17 +104,15 @@ struct HomeView: View {
 
             Divider()
 
-            // Adjusted schedule stats
+            // Adjusted schedule: Bedtime → Wake Up
             HStack(spacing: 0) {
                 nightStat(icon: "moon.fill",  label: "Bedtime",  value: adjustment.adjusted.formattedBedtime)
                 Spacer()
-                Rectangle().fill(Color.secondary.opacity(0.2)).frame(width: 1, height: 36)
+                Image(systemName: "arrow.right")
+                    .font(.caption)
+                    .foregroundStyle(.secondary.opacity(0.6))
                 Spacer()
-                nightStat(icon: "alarm.fill", label: "Wake",     value: adjustment.adjusted.formattedWakeTime)
-                Spacer()
-                Rectangle().fill(Color.secondary.opacity(0.2)).frame(width: 1, height: 36)
-                Spacer()
-                nightStat(icon: "zzz",        label: "Duration", value: adjustment.adjusted.formattedDuration)
+                nightStat(icon: "alarm.fill", label: "Wake Up",  value: adjustment.adjusted.formattedWakeTime)
             }
 
             // Event time
@@ -201,4 +204,5 @@ struct HomeView: View {
     HomeView()
         .environmentObject(AppSettings())
         .environmentObject(CalendarService())
+        .environmentObject(FocusSleepService())
 }

@@ -26,6 +26,10 @@
 	<string>DynamicSleepSchedule reads your calendar events to detect conflicts with your sleep window and suggest schedule adjustments.</string>
 	<key>NSCalendarsFullAccessUsageDescription</key>
 	<string>DynamicSleepSchedule reads your calendar events to detect conflicts with your sleep window and suggest schedule adjustments.</string>
+	<key>NSHealthShareUsageDescription</key>
+	<string>DynamicSleepSchedule reads sleep data from Health to display your current sleep schedule.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>DynamicSleepSchedule writes adjusted sleep windows to Health so they can influence your Sleep Focus schedule.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

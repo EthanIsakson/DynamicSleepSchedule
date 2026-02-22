@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Displays a single sleep schedule (bedtime + wake time + duration)
+/// Displays a sleep window: Bedtime → Wake Up.
 struct SleepCardView: View {
     let title: String
     let schedule: SleepSchedule
@@ -16,26 +16,18 @@ struct SleepCardView: View {
                 .tracking(0.5)
 
             HStack(spacing: 0) {
-                sleepStat(icon: "moon.fill", label: "Bedtime", value: schedule.formattedBedtime)
+                sleepStat(icon: "moon.fill",  label: "Bedtime",  value: schedule.formattedBedtime)
                 Spacer()
-                divider
+                Image(systemName: "arrow.right")
+                    .font(.caption)
+                    .foregroundStyle(.secondary.opacity(0.6))
                 Spacer()
-                sleepStat(icon: "alarm.fill", label: "Wake", value: schedule.formattedWakeTime)
-                Spacer()
-                divider
-                Spacer()
-                sleepStat(icon: "zzz", label: "Duration", value: schedule.formattedDuration)
+                sleepStat(icon: "alarm.fill", label: "Wake Up", value: schedule.formattedWakeTime)
             }
         }
         .padding()
         .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 16))
         .opacity(dimmed ? 0.5 : 1)
-    }
-
-    private var divider: some View {
-        Rectangle()
-            .fill(Color.secondary.opacity(0.2))
-            .frame(width: 1, height: 36)
     }
 
     private func sleepStat(icon: String, label: String, value: String) -> some View {

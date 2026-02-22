@@ -34,6 +34,11 @@ class AppSettings: ObservableObject {
         didSet { UserDefaults.standard.set(eventLookAheadDays, forKey: "eventLookAheadDays") }
     }
 
+    /// Minutes before an event the user wants to be awake (used as the preparation buffer).
+    @Published var wakeOffsetMinutes: Int {
+        didSet { UserDefaults.standard.set(wakeOffsetMinutes, forKey: "wakeOffsetMinutes") }
+    }
+
     @Published var eventFilters: [EventFilter] {
         didSet {
             if let data = try? JSONEncoder().encode(eventFilters) {
@@ -49,6 +54,7 @@ class AppSettings: ObservableObject {
         self.notifyHoursBeforeBedtime = UserDefaults.standard.object(forKey: "notifyHoursBeforeBedtime") as? Int ?? 2
         self.minimumSleepHours = UserDefaults.standard.object(forKey: "minimumSleepHours") as? Double ?? 7.0
         self.eventLookAheadDays = UserDefaults.standard.object(forKey: "eventLookAheadDays") as? Int ?? 7
+        self.wakeOffsetMinutes = UserDefaults.standard.object(forKey: "wakeOffsetMinutes") as? Int ?? 30
 
         // Default bedtime: 10:30 PM
         if let saved = UserDefaults.standard.object(forKey: "defaultBedtime") as? Date {
