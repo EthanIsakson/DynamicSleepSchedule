@@ -15,9 +15,6 @@ class CalendarService: ObservableObject {
     /// How many minutes before an event the user needs to be awake and ready.
     let preparationBufferMinutes: Int = 30
 
-    /// How many hours ahead to scan for conflicting events.
-    let lookAheadHours: Int = 36
-
     // MARK: - Authorization
 
     var isAuthorized: Bool {
@@ -49,11 +46,16 @@ class CalendarService: ObservableObject {
         defer { isLoading = false }
 
         let now = Date()
-        let end = Calendar.current.date(byAdding: .hour, value: lookAheadHours, to: now)!
+        let end = Calendar.current.date(byAdding: .day, value: settings.eventLookAheadDays, to: now)!
 
         let predicate = eventStore.predicateForEvents(withStart: now, end: end, calendars: nil)
         let events = eventStore.events(matching: predicate)
             .filter { !$0.isAllDay }
+            .filter { event in
+                guard !settings.eventFilters.isEmpty else { return true }
+                let title = event.title ?? ""
+                return settings.eventFilters.allSatisfy { $0.matches(title) }
+            }
             .sorted { $0.startDate < $1.startDate }
 
         pendingAdjustment = computeAdjustment(for: events, settings: settings)

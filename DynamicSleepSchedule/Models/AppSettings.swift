@@ -29,12 +29,26 @@ class AppSettings: ObservableObject {
         didSet { UserDefaults.standard.set(minimumSleepHours, forKey: "minimumSleepHours") }
     }
 
+    // MARK: - Calendar Sync
+    @Published var eventLookAheadDays: Int {
+        didSet { UserDefaults.standard.set(eventLookAheadDays, forKey: "eventLookAheadDays") }
+    }
+
+    @Published var eventFilters: [EventFilter] {
+        didSet {
+            if let data = try? JSONEncoder().encode(eventFilters) {
+                UserDefaults.standard.set(data, forKey: "eventFilters")
+            }
+        }
+    }
+
     // MARK: - Init
     init() {
         self.notificationsEnabled = UserDefaults.standard.object(forKey: "notificationsEnabled") as? Bool ?? true
         self.showChangeSummary = UserDefaults.standard.object(forKey: "showChangeSummary") as? Bool ?? true
         self.notifyHoursBeforeBedtime = UserDefaults.standard.object(forKey: "notifyHoursBeforeBedtime") as? Int ?? 2
         self.minimumSleepHours = UserDefaults.standard.object(forKey: "minimumSleepHours") as? Double ?? 7.0
+        self.eventLookAheadDays = UserDefaults.standard.object(forKey: "eventLookAheadDays") as? Int ?? 7
 
         // Default bedtime: 10:30 PM
         if let saved = UserDefaults.standard.object(forKey: "defaultBedtime") as? Date {
@@ -48,6 +62,13 @@ class AppSettings: ObservableObject {
             self.defaultWakeTime = saved
         } else {
             self.defaultWakeTime = Calendar.current.date(bySettingHour: 6, minute: 30, second: 0, of: Date()) ?? Date()
+        }
+
+        if let data = UserDefaults.standard.data(forKey: "eventFilters"),
+           let saved = try? JSONDecoder().decode([EventFilter].self, from: data) {
+            self.eventFilters = saved
+        } else {
+            self.eventFilters = []
         }
     }
 }

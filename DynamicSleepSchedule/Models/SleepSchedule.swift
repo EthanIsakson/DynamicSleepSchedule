@@ -47,3 +47,39 @@ struct SleepAdjustment {
         return "Move bedtime \(absShift) min \(direction.label) for \"\(triggeringEventTitle)\""
     }
 }
+
+// MARK: - Event Name Filter
+
+/// A single name-based filter applied to calendar events before conflict detection.
+struct EventFilter: Identifiable, Codable {
+    var id: UUID
+
+    enum Operator: String, CaseIterable, Codable {
+        case contains       = "contains"
+        case doesNotContain = "doesn't contain"
+        case equals         = "equals"
+        case doesNotEqual   = "doesn't equal"
+    }
+
+    var op: Operator
+    var value: String
+
+    init(id: UUID = UUID(), op: Operator = .contains, value: String = "") {
+        self.id = id
+        self.op = op
+        self.value = value
+    }
+
+    /// Returns `true` if the event title satisfies this filter condition.
+    /// An empty `value` always passes so partially-entered filters don't block everything.
+    func matches(_ title: String) -> Bool {
+        guard !value.isEmpty else { return true }
+        switch op {
+        case .contains:       return title.localizedCaseInsensitiveContains(value)
+        case .doesNotContain: return !title.localizedCaseInsensitiveContains(value)
+        case .equals:         return title.localizedCaseInsensitiveCompare(value) == .orderedSame
+        case .doesNotEqual:   return title.localizedCaseInsensitiveCompare(value) != .orderedSame
+        }
+    }
+}
+
