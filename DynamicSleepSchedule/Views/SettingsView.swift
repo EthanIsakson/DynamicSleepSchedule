@@ -6,6 +6,7 @@ struct SettingsView: View {
 
     /// Local draft — not written to settings until the user taps Apply.
     @State private var draftFilters: [EventFilter] = []
+    @State private var syncPressed = false
 
     var body: some View {
         NavigationStack {
@@ -113,19 +114,27 @@ struct SettingsView: View {
                     }
 
                     Button {
+                        withAnimation(.spring(response: 0.1, dampingFraction: 0.6)) {
+                            syncPressed = true
+                        }
+                        withAnimation(.spring(response: 0.3, dampingFraction: 0.6).delay(0.15)) {
+                            syncPressed = false
+                        }
                         settings.eventFilters = draftFilters
                         Task { await calendarService.sync(settings: settings) }
                     } label: {
-                        Label(
-                            calendarService.isLoading ? "Syncing…" : "Apply & Sync",
-                            systemImage: calendarService.isLoading ? "hourglass" : "arrow.clockwise"
-                        )
-                        .frame(maxWidth: .infinity)
+                        HStack(spacing: 6) {
+                            Image(systemName: calendarService.isLoading ? "hourglass" : "arrow.clockwise")
+                            Text(calendarService.isLoading ? "Syncing…" : "Apply & Sync")
+                        }
+                        .frame(maxWidth: .infinity, alignment: .center)
                     }
                     .buttonStyle(.borderedProminent)
                     .tint(.indigo)
                     .disabled(calendarService.isLoading)
                     .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+                    .scaleEffect(syncPressed ? 0.95 : 1.0)
+                    .sensoryFeedback(.impact(weight: .medium), trigger: syncPressed)
 
                 } header: {
                     Text("Calendar Sync")
