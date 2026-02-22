@@ -6,7 +6,8 @@ import EventKit
 class CalendarService: ObservableObject {
 
     @Published var authorizationStatus: EKAuthorizationStatus = EKEventStore.authorizationStatus(for: .event)
-    @Published var pendingAdjustment: SleepAdjustment? = nil
+    /// One entry per night in the look-ahead window that has a conflict-driven adjustment.
+    @Published var scheduleSummary: [DaySchedule] = []
     @Published var isLoading = false
     @Published var lastSyncDate: Date? = nil
 
@@ -23,7 +24,6 @@ class CalendarService: ObservableObject {
 
     func requestAccess() async {
         let current = EKEventStore.authorizationStatus(for: .event)
-        // Already decided — just refresh published status.
         guard current == .notDetermined else {
             authorizationStatus = current
             return
@@ -45,11 +45,12 @@ class CalendarService: ObservableObject {
         isLoading = true
         defer { isLoading = false }
 
+        let cal = Calendar.current
         let now = Date()
-        let end = Calendar.current.date(byAdding: .day, value: settings.eventLookAheadDays, to: now)!
+        let end = cal.date(byAdding: .day, value: settings.eventLookAheadDays, to: now)!
 
         let predicate = eventStore.predicateForEvents(withStart: now, end: end, calendars: nil)
-        let events = eventStore.events(matching: predicate)
+        let allEvents = eventStore.events(matching: predicate)
             .filter { !$0.isAllDay }
             .filter { event in
                 guard !settings.eventFilters.isEmpty else { return true }
@@ -58,68 +59,65 @@ class CalendarService: ObservableObject {
             }
             .sorted { $0.startDate < $1.startDate }
 
-        pendingAdjustment = computeAdjustment(for: events, settings: settings)
-        lastSyncDate = Date()
-    }
+        // Compute one DaySchedule per night in the look-ahead window.
+        // Only nights with a conflict-driven adjustment are kept.
+        var summary: [DaySchedule] = []
+        for offset in 0..<settings.eventLookAheadDays {
+            guard let nightDate = cal.date(byAdding: .day, value: offset, to: cal.startOfDay(for: now)) else { continue }
+            let day = computeNightSchedule(nightDate: nightDate, events: allEvents, settings: settings)
+            if day.isAdjusted {
+                summary.append(day)
+            }
+        }
 
-    func dismissAdjustment() {
-        pendingAdjustment = nil
+        scheduleSummary = summary
+        lastSyncDate = Date()
     }
 
     // MARK: - Conflict Detection
 
-    /// Returns a `SleepAdjustment` if any event requires waking earlier than the default schedule,
-    /// or `nil` if the schedule is clear.
+    /// Builds a `DaySchedule` for a single night.
     ///
     /// Conflict rule: an event that starts **during the sleep window or within the
     /// preparation buffer after wake time** forces an earlier wake. The entire
     /// schedule (bedtime + wake time) is shifted earlier by the same amount so
-    /// sleep duration is preserved, as long as the result still meets the user's
+    /// sleep duration is preserved, provided the result still meets the user's
     /// minimum-sleep-hours requirement.
-    private func computeAdjustment(for events: [EKEvent], settings: AppSettings) -> SleepAdjustment? {
+    private func computeNightSchedule(nightDate: Date, events: [EKEvent], settings: AppSettings) -> DaySchedule {
         let cal = Calendar.current
-        let now = Date()
 
-        // Build tonight's sleep window from the user's stored time-of-day preferences.
-        let bedComponents = cal.dateComponents([.hour, .minute], from: settings.defaultBedtime)
+        let bedComponents  = cal.dateComponents([.hour, .minute], from: settings.defaultBedtime)
         let wakeComponents = cal.dateComponents([.hour, .minute], from: settings.defaultWakeTime)
 
-        guard
-            let bedtime = cal.date(
-                bySettingHour: bedComponents.hour ?? 22,
-                minute: bedComponents.minute ?? 30,
-                second: 0, of: now),
-            var wakeTime = cal.date(
-                bySettingHour: wakeComponents.hour ?? 6,
-                minute: wakeComponents.minute ?? 30,
-                second: 0, of: now)
-        else { return nil }
+        // Default sleep window for this specific night
+        let bedtime = cal.date(
+            bySettingHour: bedComponents.hour  ?? 22,
+            minute:        bedComponents.minute ?? 30,
+            second: 0, of: nightDate) ?? nightDate
 
-        // Wake time is the following morning if it falls before bedtime.
+        var wakeTime = cal.date(
+            bySettingHour: wakeComponents.hour  ?? 6,
+            minute:        wakeComponents.minute ?? 30,
+            second: 0, of: nightDate) ?? nightDate
+
+        // Wake time is the following morning if it falls before or at bedtime.
         if wakeTime <= bedtime {
-            wakeTime = cal.date(byAdding: .day, value: 1, to: wakeTime)!
+            wakeTime = cal.date(byAdding: .day, value: 1, to: wakeTime) ?? wakeTime
         }
 
-        let original = SleepSchedule(bedtime: bedtime, wakeTime: wakeTime)
-        let bufferInterval = TimeInterval(preparationBufferMinutes * 60)
-
-        // Conflict window: (bedtime, wakeTime + preparationBuffer]
-        // Events inside this window may require an earlier wake time.
+        let defaultSchedule = SleepSchedule(bedtime: bedtime, wakeTime: wakeTime)
+        let bufferInterval  = TimeInterval(preparationBufferMinutes * 60)
         let conflictWindowEnd = wakeTime.addingTimeInterval(bufferInterval)
 
+        // Find the event requiring the earliest wake time within the conflict window.
         var earliestRequiredWake: Date? = nil
         var triggeringEvent: EKEvent? = nil
 
         for event in events {
             guard let start = event.startDate else { continue }
-
-            // Must fall inside the conflict window.
             guard start > bedtime && start <= conflictWindowEnd else { continue }
 
-            // The user must be awake `preparationBufferMinutes` before the event.
             let requiredWake = start.addingTimeInterval(-bufferInterval)
-
-            // Only a conflict if it forces an earlier wake than default.
             guard requiredWake < wakeTime else { continue }
 
             if earliestRequiredWake == nil || requiredWake < earliestRequiredWake! {
@@ -129,23 +127,26 @@ class CalendarService: ObservableObject {
         }
 
         guard let requiredWake = earliestRequiredWake, let event = triggeringEvent else {
-            return nil
+            return DaySchedule(date: nightDate, defaultSchedule: defaultSchedule, adjustment: nil)
         }
 
-        // Shift bedtime earlier by the same delta to preserve sleep duration.
-        let shiftInterval = wakeTime.timeIntervalSince(requiredWake)
+        let shiftInterval   = wakeTime.timeIntervalSince(requiredWake)
         let adjustedBedtime = bedtime.addingTimeInterval(-shiftInterval)
-        let adjusted = SleepSchedule(bedtime: adjustedBedtime, wakeTime: requiredWake)
+        let adjusted        = SleepSchedule(bedtime: adjustedBedtime, wakeTime: requiredWake)
 
-        // Don't suggest an adjustment that would violate the minimum sleep requirement.
-        guard adjusted.durationHours >= settings.minimumSleepHours else { return nil }
+        // Suppress if the shift would violate minimum sleep hours.
+        guard adjusted.durationHours >= settings.minimumSleepHours else {
+            return DaySchedule(date: nightDate, defaultSchedule: defaultSchedule, adjustment: nil)
+        }
 
-        return SleepAdjustment(
-            original: original,
+        let adjustment = SleepAdjustment(
+            original: defaultSchedule,
             adjusted: adjusted,
             triggeringEventTitle: event.title ?? "Untitled Event",
-            triggeringEventDate: event.startDate,
+            triggeringEventDate:  event.startDate,
             direction: .earlier
         )
+
+        return DaySchedule(date: nightDate, defaultSchedule: defaultSchedule, adjustment: adjustment)
     }
 }
