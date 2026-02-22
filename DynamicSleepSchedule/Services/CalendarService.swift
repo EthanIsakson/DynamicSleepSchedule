@@ -21,29 +21,21 @@ class CalendarService: ObservableObject {
     // MARK: - Authorization
 
     var isAuthorized: Bool {
-        let status = EKEventStore.authorizationStatus(for: .event)
-        if #available(iOS 17.0, *) {
-            return status == .fullAccess
-        }
-        return status == .authorized
+        EKEventStore.authorizationStatus(for: .event) == .fullAccess
     }
 
     func requestAccess() async {
         let current = EKEventStore.authorizationStatus(for: .event)
-        // Already decided — just refresh published status
+        // Already decided — just refresh published status.
         guard current == .notDetermined else {
             authorizationStatus = current
             return
         }
 
         do {
-            if #available(iOS 17.0, *) {
-                try await eventStore.requestFullAccessToEvents()
-            } else {
-                _ = try await eventStore.requestAccess(to: .event)
-            }
+            try await eventStore.requestFullAccessToEvents()
         } catch {
-            // User denied or an error occurred
+            // User denied or an error occurred.
         }
 
         authorizationStatus = EKEventStore.authorizationStatus(for: .event)
