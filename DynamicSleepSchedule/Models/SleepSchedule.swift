@@ -48,6 +48,21 @@ struct SleepAdjustment {
     }
 }
 
+// MARK: - Day Schedule
+
+/// The resolved schedule for a single night — default plus any conflict-driven adjustment.
+struct DaySchedule: Identifiable {
+    var id: Date { date }
+    /// The calendar date on which the person goes to sleep (start of that day).
+    let date: Date
+    let defaultSchedule: SleepSchedule
+    /// Non-nil when a calendar event forces an earlier wake that night.
+    let adjustment: SleepAdjustment?
+
+    var isAdjusted: Bool { adjustment != nil }
+    var activeSchedule: SleepSchedule { adjustment?.adjusted ?? defaultSchedule }
+}
+
 // MARK: - Event Name Filter
 
 /// A single name-based filter applied to calendar events before conflict detection.
