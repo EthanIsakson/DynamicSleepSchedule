@@ -22,6 +22,10 @@
 	<true/>
 	<key>UILaunchScreen</key>
 	<dict/>
+	<key>NSCalendarsUsageDescription</key>
+	<string>DynamicSleepSchedule reads your calendar events to detect conflicts with your sleep window and suggest schedule adjustments.</string>
+	<key>NSCalendarsFullAccessUsageDescription</key>
+	<string>DynamicSleepSchedule reads your calendar events to detect conflicts with your sleep window and suggest schedule adjustments.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

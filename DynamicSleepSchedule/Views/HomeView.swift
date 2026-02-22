@@ -2,9 +2,8 @@ import SwiftUI
 
 struct HomeView: View {
     @EnvironmentObject private var settings: AppSettings
+    @EnvironmentObject private var calendarService: CalendarService
 
-    // Placeholder state — will be driven by CalendarService in Phase 2
-    @State private var pendingAdjustment: SleepAdjustment? = Self.mockAdjustment()
     @State private var scheduleApplied = false
 
     private var currentSchedule: SleepSchedule {
@@ -12,7 +11,10 @@ struct HomeView: View {
     }
 
     private var activeSchedule: SleepSchedule {
-        scheduleApplied ? (pendingAdjustment?.adjusted ?? currentSchedule) : currentSchedule
+        if scheduleApplied, let adj = calendarService.pendingAdjustment {
+            return adj.adjusted
+        }
+        return currentSchedule
     }
 
     var body: some View {
@@ -20,14 +22,19 @@ struct HomeView: View {
             ScrollView {
                 VStack(spacing: 20) {
 
+                    // Calendar permission prompt
+                    if !calendarService.isAuthorized {
+                        calendarPermissionView
+                    }
+
                     // Active schedule card
                     SleepCardView(
                         title: scheduleApplied ? "Adjusted Schedule" : "Tonight's Schedule",
                         schedule: activeSchedule
                     )
 
-                    // Original schedule (shown dimmed when adjustment is active)
-                    if scheduleApplied, let adj = pendingAdjustment {
+                    // Original schedule (shown dimmed when adjustment is applied)
+                    if scheduleApplied, let adj = calendarService.pendingAdjustment {
                         SleepCardView(
                             title: "Original Schedule",
                             schedule: adj.original,
@@ -36,14 +43,14 @@ struct HomeView: View {
                     }
 
                     // Adjustment banner
-                    if !scheduleApplied, let adj = pendingAdjustment {
+                    if !scheduleApplied, let adj = calendarService.pendingAdjustment {
                         AdjustmentBannerView(
                             adjustment: adj,
                             onAccept: {
                                 withAnimation { scheduleApplied = true }
                             },
                             onDismiss: {
-                                withAnimation { pendingAdjustment = nil }
+                                withAnimation { calendarService.dismissAdjustment() }
                             }
                         )
                     }
@@ -54,7 +61,7 @@ struct HomeView: View {
                     }
 
                     // Empty state
-                    if pendingAdjustment == nil && !scheduleApplied {
+                    if calendarService.pendingAdjustment == nil && !scheduleApplied && calendarService.isAuthorized {
                         emptyStateView
                     }
                 }
@@ -65,16 +72,49 @@ struct HomeView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
-                        // Phase 2: manual calendar refresh
+                        Task { await calendarService.sync(settings: settings) }
                     } label: {
-                        Image(systemName: "arrow.clockwise")
+                        if calendarService.isLoading {
+                            ProgressView()
+                        } else {
+                            Image(systemName: "arrow.clockwise")
+                        }
                     }
+                    .disabled(calendarService.isLoading || !calendarService.isAuthorized)
+                }
+            }
+            .task {
+                await calendarService.requestAccess()
+                if calendarService.isAuthorized {
+                    await calendarService.sync(settings: settings)
                 }
             }
         }
     }
 
     // MARK: - Sub-views
+
+    private var calendarPermissionView: some View {
+        VStack(spacing: 12) {
+            Image(systemName: "calendar.badge.exclamationmark")
+                .font(.system(size: 40))
+                .foregroundStyle(.orange)
+            Text("Calendar Access Needed")
+                .font(.headline)
+            Text("Allow access so the app can detect conflicts between your events and sleep window.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+            Button("Grant Access") {
+                Task { await calendarService.requestAccess() }
+            }
+            .buttonStyle(.borderedProminent)
+            .tint(.indigo)
+        }
+        .padding()
+        .frame(maxWidth: .infinity)
+        .background(.orange.opacity(0.06), in: RoundedRectangle(cornerRadius: 16))
+    }
 
     private var appliedConfirmationView: some View {
         HStack(spacing: 12) {
@@ -110,35 +150,19 @@ struct HomeView: View {
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
+            if let lastSync = calendarService.lastSyncDate {
+                Text("Last checked \(lastSync.formatted(.relative(presentation: .named)))")
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+            }
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 40)
-    }
-
-    // MARK: - Mock data (replaced by CalendarService in Phase 2)
-
-    static func mockAdjustment() -> SleepAdjustment {
-        let cal = Calendar.current
-        let tonight = cal.date(bySettingHour: 22, minute: 30, second: 0, of: Date())!
-        let tomorrow630 = cal.date(bySettingHour: 6, minute: 30, second: 0, of: Date())!
-        let earlyMeeting = cal.date(bySettingHour: 7, minute: 0, second: 0, of: Date())!
-
-        let original = SleepSchedule(bedtime: tonight, wakeTime: tomorrow630)
-        let adjusted = SleepSchedule(
-            bedtime: cal.date(byAdding: .minute, value: -30, to: tonight)!,
-            wakeTime: cal.date(byAdding: .minute, value: -30, to: tomorrow630)!
-        )
-        return SleepAdjustment(
-            original: original,
-            adjusted: adjusted,
-            triggeringEventTitle: "Team Standup",
-            triggeringEventDate: earlyMeeting,
-            direction: .earlier
-        )
     }
 }
 
 #Preview {
     HomeView()
         .environmentObject(AppSettings())
+        .environmentObject(CalendarService())
 }
