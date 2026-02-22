@@ -35,6 +35,15 @@ struct HomeView: View {
 
                         // Default schedule — always shown once authorized
                         defaultScheduleView
+
+                        // Last sync timestamp — always visible when authorized
+                        if let lastSync = calendarService.lastSyncDate {
+                            Text("Last synced \(lastSync.formatted(.relative(presentation: .named)))")
+                                .font(.caption2)
+                                .foregroundStyle(.tertiary)
+                                .frame(maxWidth: .infinity, alignment: .center)
+                                .padding(.bottom, 4)
+                        }
                     }
                 }
                 .padding()
@@ -149,11 +158,6 @@ struct HomeView: View {
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
-            if let lastSync = calendarService.lastSyncDate {
-                Text("Last checked \(lastSync.formatted(.relative(presentation: .named)))")
-                    .font(.caption2)
-                    .foregroundStyle(.tertiary)
-            }
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 32)
