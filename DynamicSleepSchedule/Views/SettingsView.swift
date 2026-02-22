@@ -68,10 +68,49 @@ struct SettingsView: View {
                     Text("The app will never suggest a schedule that dips below your minimum sleep target.")
                 }
 
+                // MARK: - Calendar Sync
+                Section {
+                    Stepper(value: $settings.eventLookAheadDays, in: 1...30) {
+                        HStack {
+                            Text("Look Ahead")
+                            Spacer()
+                            Text("\(settings.eventLookAheadDays) day\(settings.eventLookAheadDays == 1 ? "" : "s")")
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+
+                    ForEach($settings.eventFilters) { $filter in
+                        HStack(spacing: 8) {
+                            Picker("", selection: $filter.op) {
+                                ForEach(EventFilter.Operator.allCases, id: \.self) { op in
+                                    Text(op.rawValue).tag(op)
+                                }
+                            }
+                            .labelsHidden()
+                            .pickerStyle(.menu)
+                            .fixedSize()
+
+                            TextField("event name", text: $filter.value)
+                        }
+                    }
+                    .onDelete { settings.eventFilters.remove(atOffsets: $0) }
+
+                    Button {
+                        settings.eventFilters.append(EventFilter())
+                    } label: {
+                        Label("Add Filter", systemImage: "plus.circle.fill")
+                    }
+                } header: {
+                    Text("Calendar Sync")
+                } footer: {
+                    Text(settings.eventFilters.isEmpty
+                         ? "All events in the look-ahead window are checked for sleep conflicts."
+                         : "Only events that satisfy every filter are checked for conflicts. Swipe a filter left to delete it.")
+                }
+
                 // MARK: - About
                 Section("About") {
-                    LabeledContent("Version", value: "1.0 (Phase 1)")
-                    LabeledContent("Calendar Sync", value: "Coming in Phase 2")
+                    LabeledContent("Version", value: "1.0")
                 }
             }
             .navigationTitle("Settings")
