@@ -7,6 +7,7 @@
 
 /* Begin PBXBuildFile section */
 		8872D9DB43E544118B1C61FC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A3903FAB9ED4223B0F69D92 /* ContentView.swift */; };
+		BB1B2C3D4E5F60718293A4B5 /* CalendarService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1B2C3D4E5F60718293A4B5 /* CalendarService.swift */; };
 		73578E8F2F0C49A18EE33ECB /* DynamicSleepScheduleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D5DDE538BC43BEBCC2BF5C /* DynamicSleepScheduleApp.swift */; };
 		BAE23B0E2FAA4C959FBF6B69 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBDFB25F6DF14387B5D0DEAA /* AppSettings.swift */; };
 		C0F4115C94E24073BA4F31E5 /* SleepSchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCD2C3F281A64E94BAFE3013 /* SleepSchedule.swift */; };
@@ -29,6 +30,7 @@
 		D879DD44DBB54DCEA1CA6DBD /* SleepCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepCardView.swift; sourceTree = "<group>"; };
 		EE8B209055B74559ABEAE9F2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1A45114759C2443BB87FB6B4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AA1B2C3D4E5F60718293A4B5 /* CalendarService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,9 +61,18 @@
 				EE8B209055B74559ABEAE9F2 /* Assets.xcassets */,
 				1A45114759C2443BB87FB6B4 /* Info.plist */,
 				2FD5CA2175BE4CA99837FB3D /* Models */,
+				CC1B2C3D4E5F60718293A4B5 /* Services */,
 				B4892AD8CA4D437598C8E8EC /* Views */,
 			);
 			path = DynamicSleepSchedule;
+			sourceTree = "<group>";
+		};
+		CC1B2C3D4E5F60718293A4B5 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				AA1B2C3D4E5F60718293A4B5 /* CalendarService.swift */,
+			);
+			path = Services;
 			sourceTree = "<group>";
 		};
 		2FD5CA2175BE4CA99837FB3D /* Models */ = {
@@ -179,6 +190,7 @@
 				0C195E5C8EC94B77BFBBF96B /* SettingsView.swift in Sources */,
 				77F8F91E6DC346F09191C032 /* AdjustmentBannerView.swift in Sources */,
 				03384C7DFB4146AE87B74E61 /* SleepCardView.swift in Sources */,
+				BB1B2C3D4E5F60718293A4B5 /* CalendarService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
