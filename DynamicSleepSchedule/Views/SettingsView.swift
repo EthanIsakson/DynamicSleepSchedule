@@ -2,6 +2,10 @@ import SwiftUI
 
 struct SettingsView: View {
     @EnvironmentObject private var settings: AppSettings
+    @EnvironmentObject private var calendarService: CalendarService
+
+    /// Local draft — not written to settings until the user taps Apply.
+    @State private var draftFilters: [EventFilter] = []
 
     var body: some View {
         NavigationStack {
@@ -79,7 +83,7 @@ struct SettingsView: View {
                         }
                     }
 
-                    ForEach($settings.eventFilters) { $filter in
+                    ForEach($draftFilters) { $filter in
                         HStack(spacing: 8) {
                             Picker("", selection: $filter.op) {
                                 ForEach(EventFilter.Operator.allCases, id: \.self) { op in
@@ -91,21 +95,44 @@ struct SettingsView: View {
                             .fixedSize()
 
                             TextField("event name", text: $filter.value)
+
+                            Button {
+                                draftFilters.removeAll { $0.id == filter.id }
+                            } label: {
+                                Image(systemName: "xmark.circle.fill")
+                                    .foregroundStyle(.secondary)
+                            }
+                            .buttonStyle(.plain)
                         }
                     }
-                    .onDelete { settings.eventFilters.remove(atOffsets: $0) }
 
                     Button {
-                        settings.eventFilters.append(EventFilter())
+                        draftFilters.append(EventFilter())
                     } label: {
                         Label("Add Filter", systemImage: "plus.circle.fill")
                     }
+
+                    Button {
+                        settings.eventFilters = draftFilters
+                        Task { await calendarService.sync(settings: settings) }
+                    } label: {
+                        Label(
+                            calendarService.isLoading ? "Syncing…" : "Apply & Sync",
+                            systemImage: calendarService.isLoading ? "hourglass" : "arrow.clockwise"
+                        )
+                        .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(.indigo)
+                    .disabled(calendarService.isLoading)
+                    .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+
                 } header: {
                     Text("Calendar Sync")
                 } footer: {
-                    Text(settings.eventFilters.isEmpty
+                    Text(draftFilters.isEmpty
                          ? "All events in the look-ahead window are checked for sleep conflicts."
-                         : "Only events that satisfy every filter are checked for conflicts. Swipe a filter left to delete it.")
+                         : "Only events that satisfy every filter are checked. Tap Apply & Sync to save and run.")
                 }
 
                 // MARK: - About
@@ -115,6 +142,9 @@ struct SettingsView: View {
             }
             .navigationTitle("Settings")
             .animation(.easeInOut(duration: 0.2), value: settings.notificationsEnabled)
+            .onAppear {
+                draftFilters = settings.eventFilters
+            }
         }
     }
 }
@@ -122,4 +152,5 @@ struct SettingsView: View {
 #Preview {
     SettingsView()
         .environmentObject(AppSettings())
+        .environmentObject(CalendarService())
 }
